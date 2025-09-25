@@ -1,5 +1,6 @@
 package com.green.demo.service;
 
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 import com.green.demo.repository.UserRepository;
 import com.green.demo.dto.JoinDTO;
@@ -7,11 +8,13 @@ import com.green.demo.entity.UserEntity;
 
 @Service
 public class JoinService {
-
+	
+	private BCryptPasswordEncoder bCryptPasswordEncoder;
 	private UserRepository userRepository;
 	
-	public JoinService(UserRepository userRepository) {
+	public JoinService(UserRepository userRepository, BCryptPasswordEncoder bCryptPasswordEncoder) {
 		this.userRepository = userRepository;
+		this.bCryptPasswordEncoder = bCryptPasswordEncoder;
 	}
 
 	public void addUser(JoinDTO joinDTO) {
@@ -27,7 +30,7 @@ public class JoinService {
 		// 회원정보가 없을 때 실행
 		UserEntity user = new UserEntity();
 		user.setUsername(username);
-		user.setPassword(password);
+		user.setPassword(bCryptPasswordEncoder.encode(password));
 		user.setName(name);
 		user.setRole("ROLE_ADMIN");
 		
